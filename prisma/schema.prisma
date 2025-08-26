@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String    @id
+  firstName   String    @map("first_name")
+  lastName    String    @map("last_name")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  account     Account?   @relation()
+
+  @@map("user")
+}
+
+model Account {
+  id             String           @id
+  password       String?
+
+  disabled       Boolean
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+
+  user           User             @relation(fields: [id], references: [id], onDelete: Cascade)
+  linkedAccounts LinkedAccount[]
+  sessions       Session[]
+
+  @@map("account")
+}
+
+model LinkedAccount {
+  id              String
+  email           String   @unique
+  provider        String
+  providerUserId  String?   @map("provider_user_id")
+  status          String
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  account         Account  @relation(fields: [id], references: [id], onDelete: Cascade)
+
+  @@id([id, email])
+  @@map("linked_accounts")
+}
+
+model Session {
+  id         String   @id @default(cuid())
+  userId     String   @map("user_id")
+
+  disabled   Boolean
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  expiresAt  DateTime @map("expires_at")
+
+  account    Account     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
+  @@index([userId])
+}
