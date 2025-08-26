@@ -14,8 +14,9 @@ import { UpdateContactDto } from './dto/update-contact.dto';
 import { Headers } from 'src/decorators/header.decorator';
 import { Auth } from 'src/decorators/auth.decorator';
 import { TenantGuard } from 'src/guards/tenant.guard';
+import { AuthGuard } from 'src/guards/auth.guard';
 
-@UseGuards(TenantGuard)
+@UseGuards(AuthGuard, TenantGuard)
 @Controller('/api/v1/contact')
 export class ContactController {
   constructor(private readonly contactService: ContactService) {}
