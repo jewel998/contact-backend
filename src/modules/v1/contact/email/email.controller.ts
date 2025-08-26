@@ -6,12 +6,16 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { EmailService } from './email.service';
 import { CreateEmailDto } from './dto/create-email.dto';
 import { UpdateEmailDto } from './dto/update-email.dto';
 import { Auth } from 'src/decorators/auth.decorator';
+import { AuthGuard } from 'src/guards/auth.guard';
+import { TenantGuard } from 'src/guards/tenant.guard';
 
+@UseGuards(AuthGuard, TenantGuard)
 @Controller('/api/v1/contact/:contactId/email')
 export class EmailController {
   constructor(private readonly emailService: EmailService) {}
