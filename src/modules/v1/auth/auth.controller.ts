@@ -37,7 +37,13 @@ export class AuthController {
 
   @Get('/logout')
   logout(@Res({ passthrough: true }) res: FastifyReply) {
-    res.clearCookie('user');
+    res.clearCookie('user', {
+      path: '/api/v1/auth',
+      maxAge: 10 * 24 * 60 * 60,
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+    });
     return true;
   }
 }
