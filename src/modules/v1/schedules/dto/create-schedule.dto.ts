@@ -45,7 +45,7 @@ export class CreateScheduleDto {
   @IsNumber()
   price: number;
 
-  @ApiProperty({ description: 'The number of available seats.', required: false })
+  @ApiProperty({ description: 'The number of available seats.' })
   @IsOptional()
   @IsInt()
   seats?: number;

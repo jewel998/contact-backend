@@ -6,7 +6,6 @@ export class ListUserDto {
   @ApiProperty({
     description: 'Page number for pagination.',
     default: 1,
-    required: false,
   })
   @IsOptional()
   @Type(() => Number)
@@ -17,7 +16,6 @@ export class ListUserDto {
   @ApiProperty({
     description: 'Number of items per page.',
     default: 10,
-    required: false,
   })
   @IsOptional()
   @Type(() => Number)
@@ -29,7 +27,6 @@ export class ListUserDto {
     description: 'Sort order.',
     enum: ['asc', 'desc'],
     default: 'desc',
-    required: false,
   })
   @IsOptional()
   @IsIn(['asc', 'desc'])
@@ -38,7 +35,6 @@ export class ListUserDto {
   @ApiProperty({
     description: 'Field to sort by.',
     default: 'createdAt',
-    required: false,
   })
   @IsOptional()
   @IsString()

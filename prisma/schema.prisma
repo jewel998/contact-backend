@@ -82,7 +82,6 @@ model Tenant {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   accounts TenantAccount[]
-  contacts Contact[]
 
   @@map("tenant")
 }
@@ -103,77 +102,6 @@ model TenantAccount {
   @@map("tenant_account")
 }
 
-model Contact {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  tenantId  String   @db.ObjectId
-  firstName String
-  lastName  String
-  createdBy String   @map("created_by")
-  updatedBy String   @map("updated_by")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  emails ContactEmail[]
-  phones ContactPhone[]
-  notes  ContactNote[]
-  tenant Tenant         @relation(fields: [tenantId], references: [id])
-
-  @@index([tenantId, createdAt])
-  @@map("contact")
-}
-
-model ContactEmail {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  contactId String   @map("contact_id") @db.ObjectId
-  label     String   @default("work")
-  email     String
-  isPrimary Boolean  @default(false)
-  createdBy String   @map("created_by")
-  updatedBy String   @map("updated_by")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  contact Contact @relation(fields: [contactId], references: [id])
-
-  @@unique([contactId, email])
-  @@index([email])
-  @@map("contact_email")
-}
-
-model ContactPhone {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  contactId   String   @map("contact_id") @db.ObjectId
-  label       String   @default("mobile")
-  countryCode String?
-  number      String
-  isPrimary   Boolean  @default(false)
-  createdBy   String   @map("created_by")
-  updatedBy   String   @map("updated_by")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
-  contact Contact @relation(fields: [contactId], references: [id])
-
-  @@unique([contactId, number])
-  @@index([number])
-  @@map("contact_phone")
-}
-
-model ContactNote {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  contactId String   @map("contact_id") @db.ObjectId
-  body      String
-  format    String
-  createdBy String   @map("created_by")
-  updatedBy String   @map("updated_by")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  contact Contact @relation(fields: [contactId], references: [id])
-
-  @@index([contactId])
-  @@map("contact_note")
-}
 
 // New TripzSearch Models
 

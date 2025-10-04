@@ -3,7 +3,6 @@ import { IsString, IsUrl, IsNotEmpty } from 'class-validator';
 
 export class AttributionDto {
   @ApiProperty({
-    example: 'TripAdvisor',
     description: 'The name of the attribution source.',
   })
   @IsString()
@@ -11,7 +10,6 @@ export class AttributionDto {
   sourceName: string;
 
   @ApiProperty({
-    example: 'https://www.tripadvisor.com',
     description: 'The URL of the attribution source.',
   })
   @IsUrl()
