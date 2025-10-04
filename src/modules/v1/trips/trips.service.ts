@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service';
-import { Trip, TripRead, TripDetailRead } from '../../../../generated/prisma';
 import { OperatorsService } from '../operators/operators.service';
+import { CreateTripDto } from './dto/create-trip.dto';
+import { UpdateTripDto } from './dto/update-trip.dto';
+import { TripDto } from './dto/trip.dto';
+import { TripReadDto } from './dto/trip-read.dto';
+import { TripDetailReadDto } from './dto/trip-detail-read.dto';
 
 @Injectable()
 export class TripsService {
@@ -10,8 +14,8 @@ export class TripsService {
     private readonly operatorsService: OperatorsService,
   ) {}
 
-  async create(data: Omit<Trip, 'id' | 'createdAt' | 'updatedAt'>): Promise<Trip> {
-    const trip = await this.prisma.trip.create({ data });
+  async create(createTripDto: CreateTripDto): Promise<TripDto> {
+    const trip = await this.prisma.trip.create({ data: createTripDto });
 
     const { id, active, destinations, durationDays, months, nextStartDate, operatorId, priceFrom, primaryDestination, slug, tags, title, tripType, startFrom, theme, content, isVerifiedOperator, operatorName } = trip;
 
@@ -66,15 +70,15 @@ export class TripsService {
     return trip;
   }
 
-  async findAll(): Promise<TripRead[]> {
+  async findAll(): Promise<TripReadDto[]> {
     return this.prisma.tripRead.findMany();
   }
 
-  async findOne(id: string): Promise<TripDetailRead | null> {
+  async findOne(id: string): Promise<TripDetailReadDto | null> {
     return this.prisma.tripDetailRead.findUnique({ where: { id } });
   }
 
-  async update(id: string, data: Partial<Trip>): Promise<Trip | null> {
+  async update(id: string, updateTripDto: UpdateTripDto): Promise<TripDto | null> {
     return this.prisma.$transaction(async (prisma) => {
       const originalTrip = await prisma.trip.findUnique({ where: { id } });
       if (!originalTrip) {
@@ -83,7 +87,7 @@ export class TripsService {
 
       const updatedTrip = await prisma.trip.update({
         where: { id },
-        data,
+        data: updateTripDto,
       });
 
       const { active, destinations, durationDays, months, nextStartDate, operatorId, priceFrom, primaryDestination, slug, tags, title, tripType, startFrom, theme, content, isVerifiedOperator, operatorName } = updatedTrip;
@@ -133,7 +137,6 @@ export class TripsService {
         },
       });
 
-      // If the operatorId has changed, we need to refresh both the old and new operators.
       if (originalTrip.operatorId !== updatedTrip.operatorId) {
         await this.operatorsService.refreshOperatorAggregates(originalTrip.operatorId, prisma);
       }
@@ -143,7 +146,7 @@ export class TripsService {
     });
   }
 
-  async remove(id: string): Promise<Trip | null> {
+  async remove(id: string): Promise<TripDto | null> {
     return this.prisma.$transaction(async (prisma) => {
       const trip = await prisma.trip.findUnique({ where: { id } });
       if (!trip) {
