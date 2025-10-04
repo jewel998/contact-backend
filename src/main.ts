@@ -15,6 +15,7 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter(),
   );
+  app.setGlobalPrefix('api');
   const configService = app.get(ConfigService);
   const config = new DocumentBuilder()
     .setTitle('Backend Service')

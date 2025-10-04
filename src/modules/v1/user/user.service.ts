@@ -5,7 +5,6 @@ import { DatabaseService } from 'src/database/database.service';
 import { ListUserDto } from './dto/list-user.dto';
 import { AccountService } from '../account/account.service';
 import { AccountAlreadyExists } from '../account/exceptions/account.exception';
-import { useId } from 'src/utils/id';
 
 @Injectable()
 export class UserService {
@@ -19,13 +18,8 @@ export class UserService {
     const { firstName, lastName, email, password } = data;
     const isRegistered = await this.account.isAlreadyRegistered(email);
     if (isRegistered) throw new AccountAlreadyExists();
-    const id = useId({
-      charSet: ['UPPERCASE', 'LOWERCASE', 'NUMBER'],
-      size: 36,
-      prefix: 'user-',
-    });
     const user = await this.db.user.create({
-      data: { id, firstName, lastName },
+      data: { firstName, lastName },
     });
     await this.account.register({ userId: user.id, password, email });
 

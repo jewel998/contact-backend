@@ -1,81 +1,78 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id        String   @id
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   firstName String   @map("first_name")
   lastName  String   @map("last_name")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  account Account?        @relation()
-  tenants TenantAccount[] @relation()
+  account Account?
+  tenants TenantAccount[]
 
   @@map("user")
 }
 
 model Account {
-  id       String  @id
-  password String?
-
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  password  String?
   disabled  Boolean
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  user           User            @relation(fields: [id], references: [id], onDelete: Cascade)
-  linkedAccounts LinkedAccount[] @relation()
-  sessions       Session[]       @relation()
+  userId         String          @unique @db.ObjectId
+  user           User            @relation(fields: [userId], references: [id])
+  linkedAccounts LinkedAccount[]
+  sessions       Session[]
 
-  @@index([id, disabled])
+  @@index([userId, disabled])
   @@map("account")
 }
 
 model LinkedAccount {
-  id             String
-  email          String   @unique
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  accountId      String   @db.ObjectId
+  email          String
   provider       String
   providerUserId String?  @map("provider_user_id")
   status         String
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
 
-  account Account @relation(fields: [id], references: [id], onDelete: Cascade)
+  account Account @relation(fields: [accountId], references: [id])
 
-  @@id([id, email])
+  @@unique([accountId, email])
   @@index([email, status])
   @@map("linked_accounts")
 }
 
 model Session {
-  id     String @id @default(cuid())
-  userId String @map("user_id")
-
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  accountId String   @map("account_id") @db.ObjectId
   disabled  Boolean
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   expiresAt DateTime @map("expires_at")
 
-  account Account @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account Account @relation(fields: [accountId], references: [id])
 
-  @@index([userId])
+  @@index([accountId])
   @@map("session")
 }
 
 model Tenant {
-  id        String   @id @default(cuid())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   icon      String?
   name      String
   slug      String   @unique
@@ -86,26 +83,29 @@ model Tenant {
 
   accounts TenantAccount[]
   contacts Contact[]
+
+  @@map("tenant")
 }
 
 model TenantAccount {
-  id        String   @id @default(cuid())
-  tenantId  String   @map("tenant_id")
-  userId    String   @map("user_id")
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  tenantId  String   @map("tenant_id") @db.ObjectId
+  userId    String   @map("user_id") @db.ObjectId
   createdBy String   @map("created_by")
   updatedBy String   @map("updated_by")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
 
   @@unique([tenantId, userId])
+  @@map("tenant_account")
 }
 
 model Contact {
-  id        String   @id @default(cuid())
-  tenantId  String
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  tenantId  String   @db.ObjectId
   firstName String
   lastName  String
   createdBy String   @map("created_by")
@@ -116,14 +116,15 @@ model Contact {
   emails ContactEmail[]
   phones ContactPhone[]
   notes  ContactNote[]
-  tenant Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant Tenant         @relation(fields: [tenantId], references: [id])
 
   @@index([tenantId, createdAt])
+  @@map("contact")
 }
 
 model ContactEmail {
-  id        String   @id @default(cuid())
-  contactId String   @map("contact_id")
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  contactId String   @map("contact_id") @db.ObjectId
   label     String   @default("work")
   email     String
   isPrimary Boolean  @default(false)
@@ -132,33 +133,35 @@ model ContactEmail {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contact Contact @relation(fields: [contactId], references: [id])
 
   @@unique([contactId, email])
   @@index([email])
+  @@map("contact_email")
 }
 
 model ContactPhone {
-  id          String   @id @default(cuid())
-  contactId   String   @map("contact_id")
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  contactId   String   @map("contact_id") @db.ObjectId
   label       String   @default("mobile")
   countryCode String?
   number      String
   isPrimary   Boolean  @default(false)
-  createdBy String   @map("created_by")
-  updatedBy String   @map("updated_by")
+  createdBy   String   @map("created_by")
+  updatedBy   String   @map("updated_by")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contact Contact @relation(fields: [contactId], references: [id])
 
   @@unique([contactId, number])
   @@index([number])
+  @@map("contact_phone")
 }
 
 model ContactNote {
-  id        String   @id @default(cuid())
-  contactId String   @map("contact_id")
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  contactId String   @map("contact_id") @db.ObjectId
   body      String
   format    String
   createdBy String   @map("created_by")
@@ -166,7 +169,221 @@ model ContactNote {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contact Contact @relation(fields: [contactId], references: [id])
 
   @@index([contactId])
+  @@map("contact_note")
+}
+
+// New TripzSearch Models
+
+model Trip {
+  id                  String    @id @default(auto()) @map("_id") @db.ObjectId
+  active              Boolean
+  content             Json
+  createdAt           DateTime  @default(now())
+  currency            String
+  destinations        String[]  @db.ObjectId
+  durationDays        Int
+  isVerifiedOperator  Boolean
+  months              String[]
+  nextStartDate       String
+  operatorId          String    @db.ObjectId
+  priceFrom           Float
+  primaryDestination  String    @db.ObjectId
+  slug                String    @unique
+  source              Json
+  tags                String[]
+  title               String
+  tripType            String
+  updatedAt           DateTime  @updatedAt
+  operatorName        String
+  startFrom           String
+  theme               String
+  v                   Int
+
+  @@map("trips")
+}
+
+model TripRead {
+  id                  String   @id @map("_id") @db.ObjectId
+  active              Boolean
+  destinations        String[]
+  durationDays        Int
+  minPrice            Float
+  months              String[]
+  nextStartDate       String
+  operator            Json
+  primaryDestination  String
+  slug                String   @unique
+  tags                String[]
+  title               String
+  tripType            String
+  updatedAt           DateTime @updatedAt
+  startFrom           String
+  theme               String
+
+  @@map("trip_read")
+}
+
+model TripDetailRead {
+  id                  String   @id @map("_id") @db.ObjectId
+  content             Json
+  destinations        String[]
+  durationDays        Int
+  media               Json?
+  operator            Json
+  primaryDestination  String
+  slug                String   @unique
+  tags                String[]
+  title               String
+  tripType            String
+  updatedAt           DateTime @updatedAt
+  startFrom           String
+  theme               String
+
+  @@map("trip_detail_read")
+}
+
+model Operator {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  slug        String   @unique
+  address     String?
+  aliases     String[]
+  attribution Json
+  brand       Json
+  createdAt   DateTime @default(now())
+  isPartner   Boolean
+  legalNames  String[]
+  links       Json
+  name        String
+  updatedAt   DateTime @updatedAt
+  verified    Boolean
+  ratingAvg   Float?
+  ratings     Json
+  profile     Json
+
+  @@map("operators")
+}
+
+model OperatorRead {
+  id            String   @id @map("_id") @db.ObjectId
+  slug          String   @unique
+  minPrice      Float
+  name          String
+  nextStartDate String
+  ratingAvg     Float?
+  regions       String[]
+  tripsCount    Int
+  updatedAt     DateTime @updatedAt
+  verified      Boolean
+  rating        Float?
+  currency      String
+  logoUrl       String?
+  topTags       String[]
+
+  @@map("operator_read")
+}
+
+model OperatorDetailRead {
+  id            String   @id @map("_id") @db.ObjectId
+  slug          String   @unique
+  address       String?
+  aliases       String[]
+  brand         Json
+  legalNames    String[]
+  links         Json
+  minPrice      Float
+  name          String
+  nextStartDate String
+  ratingAvg     Float?
+  regions       String[]
+  tripsCount    Int
+  updatedAt     DateTime @updatedAt
+  verified      Boolean
+  ratings       Json
+  profile       Json
+
+  @@map("operator_detail_read")
+}
+
+model Collection {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  slug        String   @unique
+  active      Boolean
+  title       String
+  subtitle    String?
+  description String?
+  content     Json?
+  tripIds     String[] @db.ObjectId
+  type        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("collections")
+}
+
+model CollectionRead {
+  id            String   @id @map("_id") @db.ObjectId
+  slug          String   @unique
+  active        Boolean
+  avgPrice      Float
+  minPrice      Float
+  nextStartDate String
+  stats         Json
+  title         String
+  tripIds       String[] @db.ObjectId
+  type          String
+  updatedAt     DateTime @updatedAt
+
+  @@map("collections_read")
+}
+
+model CollectionDetailRead {
+  id          String   @id @map("_id") @db.ObjectId
+  slug        String   @unique
+  content     Json
+  description String
+  subtitle    String?
+  title       String
+  tripIds     String[] @db.ObjectId
+  updatedAt   DateTime @updatedAt
+
+  @@map("collections_detail_read")
+}
+
+model Schedule {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  tripId     String   @db.ObjectId
+  vendorUrl  String
+  end        String
+  start      String
+  createdAt  DateTime @default(now())
+  currency   String
+  lastSeenAt String
+  month      String
+  price      Float
+  seats      Int?
+  status     String
+
+  @@map("schedules")
+}
+
+model Destination {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  slug           String   @unique
+  ancestors      Json[]
+  best_months    String[]
+  children_count Int
+  attractions    String[]
+  createdAt      DateTime @default(now())
+  description    String
+  kind           String
+  name           String
+  photos         Json[]
+  popularity     Float
+  top_styles     String[]
+  updatedAt      DateTime @updatedAt
+
+  @@map("destinations")
 }
