@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '../../../database/database.service';
-import { Destination, Prisma } from '../../../../generated/prisma';
+import { DatabaseService } from '@/database/database.service';
+import { Destination } from 'generated/prisma';
 import { CreateDestinationDto } from './dto/create-destination.dto';
 import { UpdateDestinationDto } from './dto/update-destination.dto';
 
@@ -11,13 +11,7 @@ export class DestinationsService {
   async create(
     createDestinationDto: CreateDestinationDto,
   ): Promise<Destination> {
-    const { ancestors, photos, ...rest } = createDestinationDto;
-    const data: Prisma.DestinationCreateInput = {
-      ...rest,
-      ancestors: ancestors as unknown as Prisma.JsonArray,
-      photos: photos as unknown as Prisma.JsonArray,
-    };
-    return this.prisma.destination.create({ data });
+    return this.prisma.destination.create({ data: createDestinationDto });
   }
 
   async findAll(): Promise<Destination[]> {
@@ -32,19 +26,9 @@ export class DestinationsService {
     id: string,
     updateDestinationDto: UpdateDestinationDto,
   ): Promise<Destination | null> {
-    const { ancestors, photos, ...rest } = updateDestinationDto;
-    const data: Prisma.DestinationUpdateInput = { ...rest };
-
-    if (ancestors) {
-      data.ancestors = ancestors as unknown as Prisma.JsonArray;
-    }
-    if (photos) {
-      data.photos = photos as unknown as Prisma.JsonArray;
-    }
-
     return this.prisma.destination.update({
       where: { id },
-      data,
+      data: updateDestinationDto,
     });
   }
 

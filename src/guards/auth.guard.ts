@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { FastifyRequest as Request } from 'fastify';
 import { Observable } from 'rxjs';
-import { AuthService } from 'src/modules/v1/auth/auth.service';
+import { AuthService } from '@/modules/v1/auth/auth.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {

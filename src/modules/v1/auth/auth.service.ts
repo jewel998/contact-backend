@@ -4,12 +4,12 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { UserService } from '../user/user.service';
+import { UserService } from '@/modules/v1/user/user.service';
 import { TokenService } from './token.service';
 import { RegisterAccountDto } from './dto/register.dto';
 import { FastifyReply } from 'fastify';
 import { LoginDto } from './dto/login.dto';
-import { AccountService } from '../account/account.service';
+import { AccountService } from '@/modules/v1/account/account.service';
 import { InvalidCredentials } from './exceptions/auth.exception';
 
 @Injectable()

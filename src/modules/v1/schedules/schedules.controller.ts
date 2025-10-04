@@ -11,7 +11,7 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { SchedulesService } from './schedules.service';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
-import { Schedule } from '../../../generated/prisma';
+import { Schedule } from 'generated/prisma';
 
 @ApiTags('Schedules')
 @Controller('v1/schedules')

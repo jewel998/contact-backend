@@ -133,45 +133,6 @@ model Trip {
   @@map("trips")
 }
 
-model TripRead {
-  id                  String   @id @map("_id") @db.ObjectId
-  active              Boolean
-  destinations        String[]
-  durationDays        Int
-  minPrice            Float
-  months              String[]
-  nextStartDate       String
-  operator            Json
-  primaryDestination  String
-  slug                String   @unique
-  tags                String[]
-  title               String
-  tripType            String
-  updatedAt           DateTime @updatedAt
-  startFrom           String
-  theme               String
-
-  @@map("trip_read")
-}
-
-model TripDetailRead {
-  id                  String   @id @map("_id") @db.ObjectId
-  content             Json
-  destinations        String[]
-  durationDays        Int
-  media               Json?
-  operator            Json
-  primaryDestination  String
-  slug                String   @unique
-  tags                String[]
-  title               String
-  tripType            String
-  updatedAt           DateTime @updatedAt
-  startFrom           String
-  theme               String
-
-  @@map("trip_detail_read")
-}
 
 model Operator {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -194,46 +155,6 @@ model Operator {
   @@map("operators")
 }
 
-model OperatorRead {
-  id            String   @id @map("_id") @db.ObjectId
-  slug          String   @unique
-  minPrice      Float
-  name          String
-  nextStartDate String
-  ratingAvg     Float?
-  regions       String[]
-  tripsCount    Int
-  updatedAt     DateTime @updatedAt
-  verified      Boolean
-  rating        Float?
-  currency      String
-  logoUrl       String?
-  topTags       String[]
-
-  @@map("operator_read")
-}
-
-model OperatorDetailRead {
-  id            String   @id @map("_id") @db.ObjectId
-  slug          String   @unique
-  address       String?
-  aliases       String[]
-  brand         Json
-  legalNames    String[]
-  links         Json
-  minPrice      Float
-  name          String
-  nextStartDate String
-  ratingAvg     Float?
-  regions       String[]
-  tripsCount    Int
-  updatedAt     DateTime @updatedAt
-  verified      Boolean
-  ratings       Json
-  profile       Json
-
-  @@map("operator_detail_read")
-}
 
 model Collection {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -251,34 +172,6 @@ model Collection {
   @@map("collections")
 }
 
-model CollectionRead {
-  id            String   @id @map("_id") @db.ObjectId
-  slug          String   @unique
-  active        Boolean
-  avgPrice      Float
-  minPrice      Float
-  nextStartDate String
-  stats         Json
-  title         String
-  tripIds       String[] @db.ObjectId
-  type          String
-  updatedAt     DateTime @updatedAt
-
-  @@map("collections_read")
-}
-
-model CollectionDetailRead {
-  id          String   @id @map("_id") @db.ObjectId
-  slug        String   @unique
-  content     Json
-  description String
-  subtitle    String?
-  title       String
-  tripIds     String[] @db.ObjectId
-  updatedAt   DateTime @updatedAt
-
-  @@map("collections_detail_read")
-}
 
 model Schedule {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId

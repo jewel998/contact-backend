@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAccountDto } from './dto/create-account.dto';
-import { DatabaseService } from 'src/database/database.service';
+import { DatabaseService } from '@/database/database.service';
 import { compareSync, hashSync } from 'bcrypt';
 import { AccountStatus } from './enum/status.enum';
 

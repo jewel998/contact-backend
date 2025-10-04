@@ -13,119 +13,107 @@ import { ContentDto } from './content.dto';
 import { SourceDto } from './source.dto';
 
 export class UpdateTripDto {
-  @ApiProperty({ description: 'Indicates if the trip is active.' })
+  @ApiProperty()
   @IsOptional()
   @IsBoolean()
   active?: boolean;
 
-  @ApiProperty({
-    type: ContentDto,
-    description: 'JSON object with trip content.',
-  })
+  @ApiProperty({ type: ContentDto })
   @IsOptional()
   @ValidateNested()
   @Type(() => ContentDto)
   content?: ContentDto;
 
-  @ApiProperty({ description: 'Currency of the trip price.' })
+  @ApiProperty()
   @IsOptional()
   @IsString()
   currency?: string;
 
-  @ApiProperty({ type: [String], description: 'Array of destination IDs.' })
+  @ApiProperty({ type: [String] })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
   destinations?: string[];
 
-  @ApiProperty({ description: 'Duration of the trip in days.' })
+  @ApiProperty()
   @IsOptional()
   @IsInt()
   durationDays?: number;
 
-  @ApiProperty({ description: 'Indicates if the operator is verified.' })
+  @ApiProperty()
   @IsOptional()
   @IsBoolean()
   isVerifiedOperator?: boolean;
 
-  @ApiProperty({
-    type: [String],
-    description: 'Months when the trip is available.',
-  })
+  @ApiProperty({ type: [String] })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
   months?: string[];
 
-  @ApiProperty({ description: 'The next start date of the trip.' })
+  @ApiProperty()
   @IsOptional()
   @IsString()
   nextStartDate?: string;
 
-  @ApiProperty({ description: 'The ID of the operator.' })
+  @ApiProperty()
   @IsOptional()
   @IsString()
   operatorId?: string;
 
-  @ApiProperty({ description: 'Starting price of the trip.' })
+  @ApiProperty()
   @IsOptional()
   @IsNumber()
   priceFrom?: number;
 
-  @ApiProperty({ description: 'The ID of the primary destination.' })
+  @ApiProperty()
   @IsOptional()
   @IsString()
   primaryDestination?: string;
 
-  @ApiProperty({ description: 'Unique slug for the trip.' })
+  @ApiProperty()
   @IsOptional()
   @IsString()
   slug?: string;
 
-  @ApiProperty({
-    type: SourceDto,
-    description: 'JSON object with source information.',
-  })
+  @ApiProperty({ type: SourceDto })
   @IsOptional()
   @ValidateNested()
   @Type(() => SourceDto)
   source?: SourceDto;
 
-  @ApiProperty({
-    type: [String],
-    description: 'Tags associated with the trip.',
-  })
+  @ApiProperty({ type: [String] })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
   tags?: string[];
 
-  @ApiProperty({ description: 'Title of the trip.' })
+  @ApiProperty()
   @IsOptional()
   @IsString()
   title?: string;
 
-  @ApiProperty({ description: 'Type of the trip.' })
+  @ApiProperty()
   @IsOptional()
   @IsString()
   tripType?: string;
 
-  @ApiProperty({ description: 'Name of the operator.' })
+  @ApiProperty()
   @IsOptional()
   @IsString()
   operatorName?: string;
 
-  @ApiProperty({ description: 'Starting point of the trip.' })
+  @ApiProperty()
   @IsOptional()
   @IsString()
   startFrom?: string;
 
-  @ApiProperty({ description: 'Theme of the trip.' })
+  @ApiProperty()
   @IsOptional()
   @IsString()
   theme?: string;
 
-  @ApiProperty({ description: 'Version number.' })
+  @ApiProperty()
   @IsOptional()
   @IsInt()
   v?: number;

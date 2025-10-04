@@ -11,11 +11,8 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { OperatorsService } from './operators.service';
 import { CreateOperatorDto } from './dto/create-operator.dto';
 import { UpdateOperatorDto } from './dto/update-operator.dto';
-import {
-  Operator,
-  OperatorRead,
-  OperatorDetailRead,
-} from '../../../generated/prisma';
+import { OperatorDto } from './dto/operator.dto';
+import { Operator } from 'generated/prisma';
 
 @ApiTags('Operators')
 @Controller('v1/operators')
@@ -27,6 +24,7 @@ export class OperatorsController {
   @ApiResponse({
     status: 201,
     description: 'The operator has been successfully created.',
+    type: OperatorDto,
   })
   @ApiResponse({ status: 400, description: 'Invalid input.' })
   async create(
@@ -40,9 +38,9 @@ export class OperatorsController {
   @ApiResponse({
     status: 200,
     description: 'A list of operators.',
-    type: [OperatorRead],
+    type: [OperatorDto],
   })
-  async findAll(): Promise<OperatorRead[]> {
+  async findAll(): Promise<Operator[]> {
     return this.operatorsService.findAll();
   }
 
@@ -51,10 +49,10 @@ export class OperatorsController {
   @ApiResponse({
     status: 200,
     description: 'The operator details.',
-    type: OperatorDetailRead,
+    type: OperatorDto,
   })
   @ApiResponse({ status: 404, description: 'Operator not found.' })
-  async findOne(@Param('id') id: string): Promise<OperatorDetailRead | null> {
+  async findOne(@Param('id') id: string): Promise<Operator | null> {
     return this.operatorsService.findOne(id);
   }
 
@@ -63,6 +61,7 @@ export class OperatorsController {
   @ApiResponse({
     status: 200,
     description: 'The operator has been successfully updated.',
+    type: OperatorDto,
   })
   @ApiResponse({ status: 404, description: 'Operator not found.' })
   async update(
@@ -77,6 +76,7 @@ export class OperatorsController {
   @ApiResponse({
     status: 200,
     description: 'The operator has been successfully deleted.',
+    type: OperatorDto,
   })
   @ApiResponse({ status: 404, description: 'Operator not found.' })
   async remove(@Param('id') id: string): Promise<Operator | null> {
