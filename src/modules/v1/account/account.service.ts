@@ -8,28 +8,27 @@ import { AccountStatus } from './enum/status.enum';
 export class AccountService {
   constructor(private db: DatabaseService) {}
   private create(data: CreateAccountDto) {
-    const id = data.userId;
+    const { userId, password: rawPassword } = data;
     let password: string | null = null;
-    if (data.password) {
-      password = hashSync(data.password, 10);
+    if (rawPassword) {
+      password = hashSync(rawPassword, 10);
     }
 
     return this.db.account.create({
-      data: { id, password, disabled: false },
+      data: { userId, password, disabled: false },
     });
   }
 
-  private linkAccount(data: CreateAccountDto) {
-    const { userId: id, email } = data;
+  private linkAccount(accountId: string, email: string) {
     const provider = email.split('@')[1].split('.')[0];
     return this.db.linkedAccount.create({
-      data: { id, email, provider, status: AccountStatus.UNVERIFIED },
+      data: { accountId, email, provider, status: AccountStatus.UNVERIFIED },
     });
   }
 
   async register(data: CreateAccountDto) {
-    await this.create(data);
-    await this.linkAccount(data);
+    const account = await this.create(data);
+    await this.linkAccount(account.id, data.email);
   }
 
   getById(id: string) {
@@ -40,11 +39,11 @@ export class AccountService {
     try {
       const linkedAccount = await this.db.linkedAccount.findFirst({
         where: { email, status: { not: AccountStatus.INACTIVE } },
-        select: { id: true },
+        select: { accountId: true },
       });
       if (linkedAccount) {
-        const { id } = linkedAccount;
-        const account = await this.db.account.findFirst({ where: { id } });
+        const { accountId } = linkedAccount;
+        const account = await this.db.account.findFirst({ where: { id: accountId } });
         if (account && compareSync(password, account.password ?? '')) {
           return account.id;
         }
@@ -65,12 +64,12 @@ export class AccountService {
   }
 
   async getLinkedAccounts(id: string) {
-    return this.db.linkedAccount.findMany({ where: { id } });
+    return this.db.linkedAccount.findMany({ where: { accountId: id } });
   }
 
   private removeLinkedAccounts(id: string) {
     return this.db.linkedAccount.updateMany({
-      where: { id },
+      where: { accountId: id },
       data: { status: AccountStatus.INACTIVE },
     });
   }

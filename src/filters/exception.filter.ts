@@ -36,7 +36,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
           : 'Unknown exception';
 
     response
-      .headers({ 'Content-Type': 'applicaiton/json' })
+      .headers({ 'Content-Type': 'application/json' })
       .status(status)
       .send(
         JSON.stringify({

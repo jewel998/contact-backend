@@ -8,9 +8,19 @@ import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { HttpExceptionFilter } from './filters/exception.filter';
 import { ValidationPipe } from './pipes/validation.pipe';
 import { RequestInterceptor } from './interceptors/response.interceptor';
+import { validationSchema } from './config/env.validation';
+import { HealthModule } from './modules/health/health.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), DatabaseModule, V1Module],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validationSchema,
+    }),
+    DatabaseModule,
+    V1Module,
+    HealthModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,
