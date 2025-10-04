@@ -16,7 +16,9 @@ export class CreateScheduleDto {
   @IsNotEmpty()
   tripId: string;
 
-  @ApiProperty({ description: 'The URL to the vendor\'s page for this schedule.' })
+  @ApiProperty({
+    description: "The URL to the vendor's page for this schedule.",
+  })
   @IsUrl()
   @IsNotEmpty()
   vendorUrl: string;

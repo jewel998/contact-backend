@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service';
-import { Collection, CollectionRead, CollectionDetailRead, Prisma } from '../../../../generated/prisma';
+import {
+  Collection,
+  CollectionRead,
+  CollectionDetailRead,
+  Prisma,
+} from '../../../../generated/prisma';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
 
@@ -16,7 +21,8 @@ export class CollectionsService {
         content: content || Prisma.JsonNull,
       };
       const collection = await prisma.collection.create({ data });
-      const { id, slug, active, title, tripIds, type, description, subtitle } = collection;
+      const { id, slug, active, title, tripIds, type, description, subtitle } =
+        collection;
 
       const trips = await prisma.trip.findMany({
         where: { id: { in: tripIds } },
@@ -24,11 +30,20 @@ export class CollectionsService {
 
       const prices = trips.map((t) => t.priceFrom).filter((p) => p != null);
       const minPrice = prices.length > 0 ? Math.min(...prices) : 0;
-      const avgPrice = prices.length > 0 ? prices.reduce((a, b) => a + b, 0) / prices.length : 0;
-      const startDates = trips.map((t) => t.nextStartDate).filter((d) => d != null).sort();
+      const avgPrice =
+        prices.length > 0
+          ? prices.reduce((a, b) => a + b, 0) / prices.length
+          : 0;
+      const startDates = trips
+        .map((t) => t.nextStartDate)
+        .filter((d) => d != null)
+        .sort();
       const nextStartDate = startDates.length > 0 ? startDates[0] : '';
       const durations = trips.map((t) => t.durationDays);
-      const avgDuration = durations.length > 0 ? durations.reduce((a, b) => a + b, 0) / durations.length : 0;
+      const avgDuration =
+        durations.length > 0
+          ? durations.reduce((a, b) => a + b, 0) / durations.length
+          : 0;
 
       await prisma.collectionRead.create({
         data: {
@@ -81,7 +96,10 @@ export class CollectionsService {
     return this.prisma.collectionDetailRead.findUnique({ where: { id } });
   }
 
-  async update(id: string, updateCollectionDto: UpdateCollectionDto): Promise<Collection | null> {
+  async update(
+    id: string,
+    updateCollectionDto: UpdateCollectionDto,
+  ): Promise<Collection | null> {
     return this.prisma.$transaction(async (prisma) => {
       const { content, ...rest } = updateCollectionDto;
       const data: Prisma.CollectionUpdateInput = { ...rest };
@@ -94,7 +112,8 @@ export class CollectionsService {
         data,
       });
 
-      const { slug, active, title, tripIds, type, description, subtitle } = updatedCollection;
+      const { slug, active, title, tripIds, type, description, subtitle } =
+        updatedCollection;
 
       const trips = await prisma.trip.findMany({
         where: { id: { in: tripIds } },
@@ -102,11 +121,20 @@ export class CollectionsService {
 
       const prices = trips.map((t) => t.priceFrom).filter((p) => p != null);
       const minPrice = prices.length > 0 ? Math.min(...prices) : 0;
-      const avgPrice = prices.length > 0 ? prices.reduce((a, b) => a + b, 0) / prices.length : 0;
-      const startDates = trips.map((t) => t.nextStartDate).filter((d) => d != null).sort();
+      const avgPrice =
+        prices.length > 0
+          ? prices.reduce((a, b) => a + b, 0) / prices.length
+          : 0;
+      const startDates = trips
+        .map((t) => t.nextStartDate)
+        .filter((d) => d != null)
+        .sort();
       const nextStartDate = startDates.length > 0 ? startDates[0] : '';
       const durations = trips.map((t) => t.durationDays);
-      const avgDuration = durations.length > 0 ? durations.reduce((a, b) => a + b, 0) / durations.length : 0;
+      const avgDuration =
+        durations.length > 0
+          ? durations.reduce((a, b) => a + b, 0) / durations.length
+          : 0;
 
       await prisma.collectionRead.update({
         where: { id },

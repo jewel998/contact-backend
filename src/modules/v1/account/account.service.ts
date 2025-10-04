@@ -43,7 +43,9 @@ export class AccountService {
       });
       if (linkedAccount) {
         const { accountId } = linkedAccount;
-        const account = await this.db.account.findFirst({ where: { id: accountId } });
+        const account = await this.db.account.findFirst({
+          where: { id: accountId },
+        });
         if (account && compareSync(password, account.password ?? '')) {
           return account.id;
         }

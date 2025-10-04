@@ -43,7 +43,10 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Get('/user')
   @ApiOperation({ summary: 'Get authenticated user' })
-  @ApiResponse({ status: 200, description: 'User data retrieved successfully.' })
+  @ApiResponse({
+    status: 200,
+    description: 'User data retrieved successfully.',
+  })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   user(@Auth('uid') uid: string) {
     return this.authService.getAuthUser(uid);

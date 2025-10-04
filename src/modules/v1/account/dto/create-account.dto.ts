@@ -2,7 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsOptional, IsString, IsMongoId } from 'class-validator';
 
 export class CreateAccountDto {
-  @ApiProperty({ description: 'The ID of the user associated with this account.' })
+  @ApiProperty({
+    description: 'The ID of the user associated with this account.',
+  })
   @IsMongoId()
   userId: string;
 

@@ -7,7 +7,11 @@ import { HealthDto } from './dto/health.dto';
 export class HealthController {
   @Get()
   @ApiOperation({ summary: 'Check the health of the application' })
-  @ApiResponse({ status: 200, description: 'The application is healthy.', type: HealthDto })
+  @ApiResponse({
+    status: 200,
+    description: 'The application is healthy.',
+    type: HealthDto,
+  })
   check(): HealthDto {
     return { status: 'ok' };
   }

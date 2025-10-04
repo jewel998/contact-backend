@@ -25,7 +25,10 @@ export class SchedulesService {
     return this.prisma.schedule.findUnique({ where: { id } });
   }
 
-  async update(id: string, updateScheduleDto: UpdateScheduleDto): Promise<Schedule | null> {
+  async update(
+    id: string,
+    updateScheduleDto: UpdateScheduleDto,
+  ): Promise<Schedule | null> {
     return this.prisma.schedule.update({
       where: { id },
       data: {

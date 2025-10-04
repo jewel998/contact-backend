@@ -15,7 +15,9 @@ export class UpdateScheduleDto {
   @IsMongoId()
   tripId?: string;
 
-  @ApiProperty({ description: 'The URL to the vendor\'s page for this schedule.' })
+  @ApiProperty({
+    description: "The URL to the vendor's page for this schedule.",
+  })
   @IsOptional()
   @IsUrl()
   vendorUrl?: string;

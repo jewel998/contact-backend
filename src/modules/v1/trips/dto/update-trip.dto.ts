@@ -18,7 +18,10 @@ export class UpdateTripDto {
   @IsBoolean()
   active?: boolean;
 
-  @ApiProperty({ type: ContentDto, description: 'JSON object with trip content.' })
+  @ApiProperty({
+    type: ContentDto,
+    description: 'JSON object with trip content.',
+  })
   @IsOptional()
   @ValidateNested()
   @Type(() => ContentDto)
@@ -45,7 +48,10 @@ export class UpdateTripDto {
   @IsBoolean()
   isVerifiedOperator?: boolean;
 
-  @ApiProperty({ type: [String], description: 'Months when the trip is available.' })
+  @ApiProperty({
+    type: [String],
+    description: 'Months when the trip is available.',
+  })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
@@ -76,13 +82,19 @@ export class UpdateTripDto {
   @IsString()
   slug?: string;
 
-  @ApiProperty({ type: SourceDto, description: 'JSON object with source information.' })
+  @ApiProperty({
+    type: SourceDto,
+    description: 'JSON object with source information.',
+  })
   @IsOptional()
   @ValidateNested()
   @Type(() => SourceDto)
   source?: SourceDto;
 
-  @ApiProperty({ type: [String], description: 'Tags associated with the trip.' })
+  @ApiProperty({
+    type: [String],
+    description: 'Tags associated with the trip.',
+  })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })

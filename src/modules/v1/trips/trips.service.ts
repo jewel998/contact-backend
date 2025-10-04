@@ -17,7 +17,26 @@ export class TripsService {
   async create(createTripDto: CreateTripDto): Promise<TripDto> {
     const trip = await this.prisma.trip.create({ data: createTripDto });
 
-    const { id, active, destinations, durationDays, months, nextStartDate, operatorId, priceFrom, primaryDestination, slug, tags, title, tripType, startFrom, theme, content, isVerifiedOperator, operatorName } = trip;
+    const {
+      id,
+      active,
+      destinations,
+      durationDays,
+      months,
+      nextStartDate,
+      operatorId,
+      priceFrom,
+      primaryDestination,
+      slug,
+      tags,
+      title,
+      tripType,
+      startFrom,
+      theme,
+      content,
+      isVerifiedOperator,
+      operatorName,
+    } = trip;
 
     await this.prisma.$transaction([
       this.prisma.tripRead.create({
@@ -78,7 +97,10 @@ export class TripsService {
     return this.prisma.tripDetailRead.findUnique({ where: { id } });
   }
 
-  async update(id: string, updateTripDto: UpdateTripDto): Promise<TripDto | null> {
+  async update(
+    id: string,
+    updateTripDto: UpdateTripDto,
+  ): Promise<TripDto | null> {
     return this.prisma.$transaction(async (prisma) => {
       const originalTrip = await prisma.trip.findUnique({ where: { id } });
       if (!originalTrip) {
@@ -90,7 +112,25 @@ export class TripsService {
         data: updateTripDto,
       });
 
-      const { active, destinations, durationDays, months, nextStartDate, operatorId, priceFrom, primaryDestination, slug, tags, title, tripType, startFrom, theme, content, isVerifiedOperator, operatorName } = updatedTrip;
+      const {
+        active,
+        destinations,
+        durationDays,
+        months,
+        nextStartDate,
+        operatorId,
+        priceFrom,
+        primaryDestination,
+        slug,
+        tags,
+        title,
+        tripType,
+        startFrom,
+        theme,
+        content,
+        isVerifiedOperator,
+        operatorName,
+      } = updatedTrip;
 
       await prisma.tripRead.update({
         where: { id },
@@ -138,9 +178,15 @@ export class TripsService {
       });
 
       if (originalTrip.operatorId !== updatedTrip.operatorId) {
-        await this.operatorsService.refreshOperatorAggregates(originalTrip.operatorId, prisma);
+        await this.operatorsService.refreshOperatorAggregates(
+          originalTrip.operatorId,
+          prisma,
+        );
       }
-      await this.operatorsService.refreshOperatorAggregates(updatedTrip.operatorId, prisma);
+      await this.operatorsService.refreshOperatorAggregates(
+        updatedTrip.operatorId,
+        prisma,
+      );
 
       return updatedTrip;
     });
@@ -157,7 +203,10 @@ export class TripsService {
       await prisma.tripDetailRead.deleteMany({ where: { id } });
       await prisma.trip.delete({ where: { id } });
 
-      await this.operatorsService.refreshOperatorAggregates(trip.operatorId, prisma);
+      await this.operatorsService.refreshOperatorAggregates(
+        trip.operatorId,
+        prisma,
+      );
 
       return trip;
     });

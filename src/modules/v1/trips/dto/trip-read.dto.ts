@@ -16,13 +16,19 @@ export class TripReadDto {
   @ApiProperty({ description: 'Minimum price of the trip.' })
   minPrice: number;
 
-  @ApiProperty({ type: [String], description: 'Months when the trip is available.' })
+  @ApiProperty({
+    type: [String],
+    description: 'Months when the trip is available.',
+  })
   months: string[];
 
   @ApiProperty({ description: 'The next start date of the trip.' })
   nextStartDate: string;
 
-  @ApiProperty({ type: 'object', description: 'JSON object with operator details.' })
+  @ApiProperty({
+    type: 'object',
+    description: 'JSON object with operator details.',
+  })
   operator: any;
 
   @ApiProperty({ description: 'The ID of the primary destination.' })
@@ -31,7 +37,10 @@ export class TripReadDto {
   @ApiProperty({ description: 'Unique slug for the trip.' })
   slug: string;
 
-  @ApiProperty({ type: [String], description: 'Tags associated with the trip.' })
+  @ApiProperty({
+    type: [String],
+    description: 'Tags associated with the trip.',
+  })
   tags: string[];
 
   @ApiProperty({ description: 'Title of the trip.' })

@@ -7,7 +7,10 @@ export class TripDto {
   @ApiProperty({ description: 'Indicates if the trip is active.' })
   active: boolean;
 
-  @ApiProperty({ type: 'object', description: 'JSON object with trip content.' })
+  @ApiProperty({
+    type: 'object',
+    description: 'JSON object with trip content.',
+  })
   content: any;
 
   @ApiProperty({ description: 'The creation date of the trip.' })
@@ -25,7 +28,10 @@ export class TripDto {
   @ApiProperty({ description: 'Indicates if the operator is verified.' })
   isVerifiedOperator: boolean;
 
-  @ApiProperty({ type: [String], description: 'Months when the trip is available.' })
+  @ApiProperty({
+    type: [String],
+    description: 'Months when the trip is available.',
+  })
   months: string[];
 
   @ApiProperty({ description: 'The next start date of the trip.' })
@@ -43,10 +49,16 @@ export class TripDto {
   @ApiProperty({ description: 'Unique slug for the trip.' })
   slug: string;
 
-  @ApiProperty({ type: 'object', description: 'JSON object with source information.' })
+  @ApiProperty({
+    type: 'object',
+    description: 'JSON object with source information.',
+  })
   source: any;
 
-  @ApiProperty({ type: [String], description: 'Tags associated with the trip.' })
+  @ApiProperty({
+    type: [String],
+    description: 'Tags associated with the trip.',
+  })
   tags: string[];
 
   @ApiProperty({ description: 'Title of the trip.' })

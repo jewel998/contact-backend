@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service';
-import { Operator, OperatorRead, OperatorDetailRead, Prisma } from '../../../../generated/prisma';
+import {
+  Operator,
+  OperatorRead,
+  OperatorDetailRead,
+  Prisma,
+} from '../../../../generated/prisma';
 import { CreateOperatorDto } from './dto/create-operator.dto';
 import { UpdateOperatorDto } from './dto/update-operator.dto';
 import { BrandDto } from './dto/brand.dto';
@@ -11,7 +16,8 @@ export class OperatorsService {
 
   async create(createOperatorDto: CreateOperatorDto): Promise<Operator> {
     return this.prisma.$transaction(async (prisma) => {
-      const { attribution, brand, links, ratings, profile, ...rest } = createOperatorDto;
+      const { attribution, brand, links, ratings, profile, ...rest } =
+        createOperatorDto;
       const data: Prisma.OperatorCreateInput = {
         ...rest,
         attribution,
@@ -23,7 +29,16 @@ export class OperatorsService {
       };
 
       const operator = await prisma.operator.create({ data });
-      const { id, slug, name, ratingAvg, verified, address, aliases, legalNames } = operator;
+      const {
+        id,
+        slug,
+        name,
+        ratingAvg,
+        verified,
+        address,
+        aliases,
+        legalNames,
+      } = operator;
 
       const tripsCount = 0;
       const minPrice = 0;
@@ -83,14 +98,20 @@ export class OperatorsService {
     return this.prisma.operatorDetailRead.findUnique({ where: { id } });
   }
 
-  async update(id: string, updateOperatorDto: UpdateOperatorDto): Promise<Operator | null> {
+  async update(
+    id: string,
+    updateOperatorDto: UpdateOperatorDto,
+  ): Promise<Operator | null> {
     return this.prisma.$transaction(async (prisma) => {
-      const operatorExists = await prisma.operator.findUnique({ where: { id } });
+      const operatorExists = await prisma.operator.findUnique({
+        where: { id },
+      });
       if (!operatorExists) {
         return null;
       }
 
-      const { attribution, brand, links, ratings, profile, ...rest } = updateOperatorDto;
+      const { attribution, brand, links, ratings, profile, ...rest } =
+        updateOperatorDto;
       const data: Prisma.OperatorUpdateInput = { ...rest };
 
       if (attribution) data.attribution = attribution;
@@ -116,13 +137,29 @@ export class OperatorsService {
   async refreshOperatorAggregates(operatorId: string, tx?: any) {
     const prisma = tx || this.prisma;
 
-    const operator = await prisma.operator.findUnique({ where: { id: operatorId } });
+    const operator = await prisma.operator.findUnique({
+      where: { id: operatorId },
+    });
     if (!operator) {
-      console.warn(`Operator with ID ${operatorId} not found for aggregate refresh.`);
+      console.warn(
+        `Operator with ID ${operatorId} not found for aggregate refresh.`,
+      );
       return;
     }
 
-    const { slug, name, ratingAvg, verified, address, aliases, brand, legalNames, links, ratings, profile } = operator;
+    const {
+      slug,
+      name,
+      ratingAvg,
+      verified,
+      address,
+      aliases,
+      brand,
+      legalNames,
+      links,
+      ratings,
+      profile,
+    } = operator;
 
     const trips = await prisma.trip.findMany({
       where: { operatorId: operatorId },
@@ -132,7 +169,13 @@ export class OperatorsService {
     const tripsCount = trips.length;
     const prices = trips.map((t) => t.priceFrom).filter((p) => p != null);
     const minPrice = prices.length > 0 ? Math.min(...prices) : 0;
-    const nextStartDate = trips.length > 0 ? trips.map((t) => t.nextStartDate).filter((d) => d != null).sort()[0] || '' : '';
+    const nextStartDate =
+      trips.length > 0
+        ? trips
+            .map((t) => t.nextStartDate)
+            .filter((d) => d != null)
+            .sort()[0] || ''
+        : '';
     const currency = trips.length > 0 ? trips[0].currency : '';
 
     const regions = [];

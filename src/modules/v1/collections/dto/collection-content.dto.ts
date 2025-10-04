@@ -3,7 +3,7 @@ import { IsString, IsArray, IsOptional } from 'class-validator';
 
 export class CollectionContentDto {
   @ApiProperty({
-    description: 'A brief description of the collection\'s content.',
+    description: "A brief description of the collection's content.",
   })
   @IsOptional()
   @IsString()
