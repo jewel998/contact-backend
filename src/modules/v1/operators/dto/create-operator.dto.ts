@@ -20,12 +20,12 @@ export class CreateOperatorDto {
   @IsNotEmpty()
   slug: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty()
   @IsOptional()
   @IsString()
   address?: string;
 
-  @ApiProperty({ type: [String], required: false })
+  @ApiProperty({ type: [String] })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })

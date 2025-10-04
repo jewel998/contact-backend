@@ -3,7 +3,6 @@ import { RouterModule, Routes } from '@nestjs/core';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { AccountModule } from './account/account.module';
-import { ContactModule } from './contact/contact.module';
 import { TenantModule } from './tenant/tenant.module';
 import { TripsModule } from './trips/trips.module';
 import { OperatorsModule } from './operators/operators.module';
@@ -18,7 +17,6 @@ const routes: Routes = [
       { path: '/', module: AuthModule },
       { path: '/', module: UserModule },
       { path: '/', module: AccountModule },
-      { path: '/', module: ContactModule },
       { path: '/', module: TenantModule },
       { path: '/', module: TripsModule },
       { path: '/', module: OperatorsModule },
@@ -35,7 +33,6 @@ const routes: Routes = [
     AuthModule,
     UserModule,
     AccountModule,
-    ContactModule,
     TenantModule,
     TripsModule,
     OperatorsModule,

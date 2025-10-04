@@ -10,44 +10,44 @@ import { Type } from 'class-transformer';
 import { CollectionContentDto } from './collection-content.dto';
 
 export class UpdateCollectionDto {
-  @ApiProperty({ required: false })
+  @ApiProperty()
   @IsOptional()
   @IsString()
   slug?: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty()
   @IsOptional()
   @IsBoolean()
   active?: boolean;
 
-  @ApiProperty({ required: false })
+  @ApiProperty()
   @IsOptional()
   @IsString()
   title?: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty()
   @IsOptional()
   @IsString()
   subtitle?: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty()
   @IsOptional()
   @IsString()
   description?: string;
 
-  @ApiProperty({ type: CollectionContentDto, required: false })
+  @ApiProperty({ type: CollectionContentDto })
   @IsOptional()
   @ValidateNested()
   @Type(() => CollectionContentDto)
   content?: CollectionContentDto;
 
-  @ApiProperty({ type: [String], required: false })
+  @ApiProperty({ type: [String] })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
   tripIds?: string[];
 
-  @ApiProperty({ required: false })
+  @ApiProperty()
   @IsOptional()
   @IsString()
   type?: string;

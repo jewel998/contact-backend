@@ -12,63 +12,63 @@ import { AncestorDto } from './ancestor.dto';
 import { PhotoDto } from './photo.dto';
 
 export class UpdateDestinationDto {
-  @ApiProperty({ required: false })
+  @ApiProperty()
   @IsOptional()
   @IsString()
   slug?: string;
 
-  @ApiProperty({ type: [AncestorDto], required: false })
+  @ApiProperty({ type: [AncestorDto] })
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => AncestorDto)
   ancestors?: AncestorDto[];
 
-  @ApiProperty({ type: [String], required: false })
+  @ApiProperty({ type: [String] })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
   best_months?: string[];
 
-  @ApiProperty({ required: false })
+  @ApiProperty()
   @IsOptional()
   @IsInt()
   children_count?: number;
 
-  @ApiProperty({ type: [String], required: false })
+  @ApiProperty({ type: [String] })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
   attractions?: string[];
 
-  @ApiProperty({ required: false })
+  @ApiProperty()
   @IsOptional()
   @IsString()
   description?: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty()
   @IsOptional()
   @IsString()
   kind?: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty()
   @IsOptional()
   @IsString()
   name?: string;
 
-  @ApiProperty({ type: [PhotoDto], required: false })
+  @ApiProperty({ type: [PhotoDto] })
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => PhotoDto)
   photos?: PhotoDto[];
 
-  @ApiProperty({ required: false })
+  @ApiProperty()
   @IsOptional()
   @IsNumber()
   popularity?: number;
 
-  @ApiProperty({ type: [String], required: false })
+  @ApiProperty({ type: [String] })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })

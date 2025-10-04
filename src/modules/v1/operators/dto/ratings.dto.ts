@@ -3,7 +3,6 @@ import { IsNumber, IsInt, Min, Max } from 'class-validator';
 
 export class RatingsDto {
   @ApiProperty({
-    example: 4.5,
     description: 'The average rating of the operator.',
   })
   @IsNumber()
@@ -12,7 +11,6 @@ export class RatingsDto {
   average: number;
 
   @ApiProperty({
-    example: 100,
     description: 'The total number of ratings.',
   })
   @IsInt()

@@ -25,17 +25,17 @@ export class CreateCollectionDto {
   @IsNotEmpty()
   title: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty()
   @IsOptional()
   @IsString()
   subtitle?: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty()
   @IsOptional()
   @IsString()
   description?: string;
 
-  @ApiProperty({ type: CollectionContentDto, required: false })
+  @ApiProperty({ type: CollectionContentDto })
   @IsOptional()
   @ValidateNested()
   @Type(() => CollectionContentDto)

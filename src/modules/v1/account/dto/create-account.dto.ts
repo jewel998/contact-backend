@@ -6,7 +6,7 @@ export class CreateAccountDto {
   @IsMongoId()
   userId: string;
 
-  @ApiProperty({ description: 'The password for the account.', required: false })
+  @ApiProperty({ description: 'The password for the account.' })
   @IsOptional()
   @IsString()
   password?: string;
