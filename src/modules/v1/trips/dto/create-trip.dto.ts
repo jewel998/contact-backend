@@ -5,18 +5,22 @@ import {
   IsArray,
   IsInt,
   IsNumber,
-  IsObject,
   IsNotEmpty,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
+import { ContentDto } from './content.dto';
+import { SourceDto } from './source.dto';
 
 export class CreateTripDto {
   @ApiProperty({ example: true, description: 'Indicates if the trip is active.' })
   @IsBoolean()
   active: boolean;
 
-  @ApiProperty({ type: 'object', example: { "details": "..." }, description: 'JSON object with trip content.' })
-  @IsObject()
-  content: any;
+  @ApiProperty({ type: ContentDto, description: 'JSON object with trip content.' })
+  @ValidateNested()
+  @Type(() => ContentDto)
+  content: ContentDto;
 
   @ApiProperty({ example: 'USD', description: 'Currency of the trip price.' })
   @IsString()
@@ -65,9 +69,10 @@ export class CreateTripDto {
   @IsNotEmpty()
   slug: string;
 
-  @ApiProperty({ type: 'object', example: { "source": "..." }, description: 'JSON object with source information.' })
-  @IsObject()
-  source: any;
+  @ApiProperty({ type: SourceDto, description: 'JSON object with source information.' })
+  @ValidateNested()
+  @Type(() => SourceDto)
+  source: SourceDto;
 
   @ApiProperty({ type: [String], example: ['safari', 'adventure'], description: 'Tags associated with the trip.' })
   @IsArray()

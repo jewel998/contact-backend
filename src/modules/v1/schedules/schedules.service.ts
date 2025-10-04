@@ -1,15 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service';
 import { Schedule } from '../../../../generated/prisma';
+import { CreateScheduleDto } from './dto/create-schedule.dto';
+import { UpdateScheduleDto } from './dto/update-schedule.dto';
 
 @Injectable()
 export class SchedulesService {
   constructor(private readonly prisma: DatabaseService) {}
 
-  async create(data: Omit<Schedule, 'id' | 'createdAt' | 'lastSeenAt'>): Promise<Schedule> {
+  async create(createScheduleDto: CreateScheduleDto): Promise<Schedule> {
     return this.prisma.schedule.create({
       data: {
-        ...data,
+        ...createScheduleDto,
         lastSeenAt: new Date().toISOString(),
       },
     });
@@ -23,11 +25,11 @@ export class SchedulesService {
     return this.prisma.schedule.findUnique({ where: { id } });
   }
 
-  async update(id: string, data: Partial<Schedule>): Promise<Schedule | null> {
+  async update(id: string, updateScheduleDto: UpdateScheduleDto): Promise<Schedule | null> {
     return this.prisma.schedule.update({
       where: { id },
       data: {
-        ...data,
+        ...updateScheduleDto,
         lastSeenAt: new Date().toISOString(),
       },
     });

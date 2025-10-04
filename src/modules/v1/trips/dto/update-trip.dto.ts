@@ -5,9 +5,12 @@ import {
   IsArray,
   IsInt,
   IsNumber,
-  IsObject,
   IsOptional,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
+import { ContentDto } from './content.dto';
+import { SourceDto } from './source.dto';
 
 export class UpdateTripDto {
   @ApiProperty({ example: true, description: 'Indicates if the trip is active.', required: false })
@@ -15,10 +18,11 @@ export class UpdateTripDto {
   @IsBoolean()
   active?: boolean;
 
-  @ApiProperty({ type: 'object', example: { "details": "..." }, description: 'JSON object with trip content.', required: false })
+  @ApiProperty({ type: ContentDto, description: 'JSON object with trip content.', required: false })
   @IsOptional()
-  @IsObject()
-  content?: any;
+  @ValidateNested()
+  @Type(() => ContentDto)
+  content?: ContentDto;
 
   @ApiProperty({ example: 'USD', description: 'Currency of the trip price.', required: false })
   @IsOptional()
@@ -72,10 +76,11 @@ export class UpdateTripDto {
   @IsString()
   slug?: string;
 
-  @ApiProperty({ type: 'object', example: { "source": "..." }, description: 'JSON object with source information.', required: false })
+  @ApiProperty({ type: SourceDto, description: 'JSON object with source information.', required: false })
   @IsOptional()
-  @IsObject()
-  source?: any;
+  @ValidateNested()
+  @Type(() => SourceDto)
+  source?: SourceDto;
 
   @ApiProperty({ type: [String], example: ['safari', 'adventure'], description: 'Tags associated with the trip.', required: false })
   @IsOptional()
