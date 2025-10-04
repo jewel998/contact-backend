@@ -1,15 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service';
-import { Collection, CollectionRead, CollectionDetailRead } from '../../../../generated/prisma';
+import { Collection, CollectionRead, CollectionDetailRead, Prisma } from '../../../../generated/prisma';
+import { CreateCollectionDto } from './dto/create-collection.dto';
+import { UpdateCollectionDto } from './dto/update-collection.dto';
 
 @Injectable()
 export class CollectionsService {
   constructor(private readonly prisma: DatabaseService) {}
 
-  async create(data: Omit<Collection, 'id' | 'createdAt' | 'updatedAt'>): Promise<Collection> {
+  async create(createCollectionDto: CreateCollectionDto): Promise<Collection> {
     return this.prisma.$transaction(async (prisma) => {
+      const { content, ...rest } = createCollectionDto;
+      const data: Prisma.CollectionCreateInput = {
+        ...rest,
+        content: content || Prisma.JsonNull,
+      };
       const collection = await prisma.collection.create({ data });
-      const { id, slug, active, title, tripIds, type, content, description, subtitle } = collection;
+      const { id, slug, active, title, tripIds, type, description, subtitle } = collection;
 
       const trips = await prisma.trip.findMany({
         where: { id: { in: tripIds } },
@@ -38,6 +45,18 @@ export class CollectionsService {
         },
       });
 
+      const stats = {
+        trips: trips.length,
+        avgPrice,
+        avgDuration,
+      };
+      const baseContent =
+        collection.content &&
+        typeof collection.content === 'object' &&
+        !Array.isArray(collection.content)
+          ? collection.content
+          : {};
+
       await prisma.collectionDetailRead.create({
         data: {
           id,
@@ -46,14 +65,7 @@ export class CollectionsService {
           subtitle,
           description: description || '',
           tripIds,
-          content: {
-            ...(content as any),
-            stats: {
-              trips: trips.length,
-              avgPrice,
-              avgDuration,
-            },
-          },
+          content: { ...baseContent, stats },
         },
       });
 
@@ -69,14 +81,20 @@ export class CollectionsService {
     return this.prisma.collectionDetailRead.findUnique({ where: { id } });
   }
 
-  async update(id: string, data: Partial<Collection>): Promise<Collection | null> {
+  async update(id: string, updateCollectionDto: UpdateCollectionDto): Promise<Collection | null> {
     return this.prisma.$transaction(async (prisma) => {
+      const { content, ...rest } = updateCollectionDto;
+      const data: Prisma.CollectionUpdateInput = { ...rest };
+      if (updateCollectionDto.hasOwnProperty('content')) {
+        data.content = content || Prisma.JsonNull;
+      }
+
       const updatedCollection = await prisma.collection.update({
         where: { id },
         data,
       });
 
-      const { slug, active, title, tripIds, type, content, description, subtitle } = updatedCollection;
+      const { slug, active, title, tripIds, type, description, subtitle } = updatedCollection;
 
       const trips = await prisma.trip.findMany({
         where: { id: { in: tripIds } },
@@ -105,6 +123,18 @@ export class CollectionsService {
         },
       });
 
+      const stats = {
+        trips: trips.length,
+        avgPrice,
+        avgDuration,
+      };
+      const baseContent =
+        updatedCollection.content &&
+        typeof updatedCollection.content === 'object' &&
+        !Array.isArray(updatedCollection.content)
+          ? updatedCollection.content
+          : {};
+
       await prisma.collectionDetailRead.update({
         where: { id },
         data: {
@@ -113,14 +143,7 @@ export class CollectionsService {
           subtitle,
           description: description || '',
           tripIds,
-          content: {
-            ...(content as any),
-            stats: {
-              trips: trips.length,
-              avgPrice,
-              avgDuration,
-            },
-          },
+          content: { ...baseContent, stats },
         },
       });
 

@@ -1,24 +1,36 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service';
-import { Operator, OperatorRead, OperatorDetailRead } from '../../../../generated/prisma';
+import { Operator, OperatorRead, OperatorDetailRead, Prisma } from '../../../../generated/prisma';
+import { CreateOperatorDto } from './dto/create-operator.dto';
+import { UpdateOperatorDto } from './dto/update-operator.dto';
+import { BrandDto } from './dto/brand.dto';
 
 @Injectable()
 export class OperatorsService {
   constructor(private readonly prisma: DatabaseService) {}
 
-  async create(data: Omit<Operator, 'id' | 'createdAt' | 'updatedAt'>): Promise<Operator> {
+  async create(createOperatorDto: CreateOperatorDto): Promise<Operator> {
     return this.prisma.$transaction(async (prisma) => {
-      const operator = await prisma.operator.create({ data });
-      const { id, slug, name, ratingAvg, verified, address, aliases, brand, legalNames, links, ratings, profile } = operator;
+      const { attribution, brand, links, ratings, profile, ...rest } = createOperatorDto;
+      const data: Prisma.OperatorCreateInput = {
+        ...rest,
+        attribution,
+        brand,
+        links,
+        ratings,
+        profile,
+        ratingAvg: ratings.average,
+      };
 
-      // When a new operator is created, there are no trips yet.
-      // So, we'll use default values for trip-dependent fields.
+      const operator = await prisma.operator.create({ data });
+      const { id, slug, name, ratingAvg, verified, address, aliases, legalNames } = operator;
+
       const tripsCount = 0;
       const minPrice = 0;
       const nextStartDate = '';
-      const currency = ''; // Default currency, as no trips exist yet.
-      const regions = []; // No clear source for regions in the schema.
-      const topTags = []; // No clear source for top tags in the schema.
+      const currency = '';
+      const regions = [];
+      const topTags = [];
 
       await prisma.operatorRead.create({
         data: {
@@ -33,7 +45,7 @@ export class OperatorsService {
           tripsCount,
           rating: ratingAvg,
           currency,
-          logoUrl: (brand as any)?.logoUrl || null,
+          logoUrl: (operator.brand as BrandDto)?.logoUrl || null,
           topTags,
         },
       });
@@ -47,11 +59,11 @@ export class OperatorsService {
           verified,
           address,
           aliases,
-          brand,
+          brand: operator.brand,
           legalNames,
-          links,
-          ratings,
-          profile,
+          links: operator.links,
+          ratings: operator.ratings,
+          profile: operator.profile,
           minPrice,
           nextStartDate,
           regions,
@@ -71,11 +83,23 @@ export class OperatorsService {
     return this.prisma.operatorDetailRead.findUnique({ where: { id } });
   }
 
-  async update(id: string, data: Partial<Operator>): Promise<Operator | null> {
+  async update(id: string, updateOperatorDto: UpdateOperatorDto): Promise<Operator | null> {
     return this.prisma.$transaction(async (prisma) => {
       const operatorExists = await prisma.operator.findUnique({ where: { id } });
       if (!operatorExists) {
         return null;
+      }
+
+      const { attribution, brand, links, ratings, profile, ...rest } = updateOperatorDto;
+      const data: Prisma.OperatorUpdateInput = { ...rest };
+
+      if (attribution) data.attribution = attribution;
+      if (brand) data.brand = brand;
+      if (links) data.links = links;
+      if (profile) data.profile = profile;
+      if (ratings) {
+        data.ratings = ratings;
+        data.ratingAvg = ratings.average;
       }
 
       const updatedOperator = await prisma.operator.update({
@@ -127,7 +151,7 @@ export class OperatorsService {
         tripsCount,
         rating: ratingAvg,
         currency,
-        logoUrl: (brand as any)?.logoUrl || null,
+        logoUrl: (brand as BrandDto)?.logoUrl || null,
         topTags,
       },
     });
@@ -161,8 +185,6 @@ export class OperatorsService {
         return null;
       }
 
-      // In a real application, we might need to handle what happens to trips associated with this operator.
-      // The schema does not specify cascading deletes. For now, we only delete the operator and its read models.
       await prisma.operatorRead.delete({ where: { id } });
       await prisma.operatorDetailRead.delete({ where: { id } });
       await prisma.operator.delete({ where: { id } });
