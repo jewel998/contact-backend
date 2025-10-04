@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TripsController } from './trips.controller';
 import { TripsService } from './trips.service';
-import { OperatorsModule } from '../operators/operators.module';
+import { OperatorsModule } from '@/modules/v1/operators/operators.module';
 
 @Module({
   imports: [OperatorsModule],

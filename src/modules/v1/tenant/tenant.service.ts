@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { UpdateTenantDto } from './dto/update-tenant.dto';
-import { DatabaseService } from 'src/database/database.service';
+import { DatabaseService } from '@/database/database.service';
 
 @Injectable()
 export class TenantService {

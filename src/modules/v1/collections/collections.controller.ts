@@ -11,11 +11,8 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CollectionsService } from './collections.service';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
-import {
-  Collection,
-  CollectionRead,
-  CollectionDetailRead,
-} from '../../../generated/prisma';
+import { CollectionDto } from './dto/collection.dto';
+import { Collection } from 'generated/prisma';
 
 @ApiTags('Collections')
 @Controller('v1/collections')
@@ -27,6 +24,7 @@ export class CollectionsController {
   @ApiResponse({
     status: 201,
     description: 'The collection has been successfully created.',
+    type: CollectionDto,
   })
   @ApiResponse({ status: 400, description: 'Invalid input.' })
   async create(
@@ -40,9 +38,9 @@ export class CollectionsController {
   @ApiResponse({
     status: 200,
     description: 'A list of collections.',
-    type: [CollectionRead],
+    type: [CollectionDto],
   })
-  async findAll(): Promise<CollectionRead[]> {
+  async findAll(): Promise<Collection[]> {
     return this.collectionsService.findAll();
   }
 
@@ -51,10 +49,10 @@ export class CollectionsController {
   @ApiResponse({
     status: 200,
     description: 'The collection details.',
-    type: CollectionDetailRead,
+    type: CollectionDto,
   })
   @ApiResponse({ status: 404, description: 'Collection not found.' })
-  async findOne(@Param('id') id: string): Promise<CollectionDetailRead | null> {
+  async findOne(@Param('id') id: string): Promise<Collection | null> {
     return this.collectionsService.findOne(id);
   }
 
@@ -63,6 +61,7 @@ export class CollectionsController {
   @ApiResponse({
     status: 200,
     description: 'The collection has been successfully updated.',
+    type: CollectionDto,
   })
   @ApiResponse({ status: 404, description: 'Collection not found.' })
   async update(
@@ -77,6 +76,7 @@ export class CollectionsController {
   @ApiResponse({
     status: 200,
     description: 'The collection has been successfully deleted.',
+    type: CollectionDto,
   })
   @ApiResponse({ status: 404, description: 'Collection not found.' })
   async remove(@Param('id') id: string): Promise<Collection | null> {

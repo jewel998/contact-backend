@@ -1,10 +1,10 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { DatabaseService } from 'src/database/database.service';
+import { DatabaseService } from '@/database/database.service';
 import { ListUserDto } from './dto/list-user.dto';
-import { AccountService } from '../account/account.service';
-import { AccountAlreadyExists } from '../account/exceptions/account.exception';
+import { AccountService } from '@/modules/v1/account/account.service';
+import { AccountAlreadyExists } from '@/modules/v1/account/exceptions/account.exception';
 
 @Injectable()
 export class UserService {

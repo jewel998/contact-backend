@@ -12,8 +12,7 @@ import { TripsService } from './trips.service';
 import { CreateTripDto } from './dto/create-trip.dto';
 import { UpdateTripDto } from './dto/update-trip.dto';
 import { TripDto } from './dto/trip.dto';
-import { TripReadDto } from './dto/trip-read.dto';
-import { TripDetailReadDto } from './dto/trip-detail-read.dto';
+import { Trip } from 'generated/prisma';
 
 @ApiTags('Trips')
 @Controller('v1/trips')
@@ -28,7 +27,7 @@ export class TripsController {
     type: TripDto,
   })
   @ApiResponse({ status: 400, description: 'Invalid input.' })
-  async create(@Body() createTripDto: CreateTripDto): Promise<TripDto> {
+  async create(@Body() createTripDto: CreateTripDto): Promise<Trip> {
     return this.tripsService.create(createTripDto);
   }
 
@@ -37,9 +36,9 @@ export class TripsController {
   @ApiResponse({
     status: 200,
     description: 'A list of trips.',
-    type: [TripReadDto],
+    type: [TripDto],
   })
-  async findAll(): Promise<TripReadDto[]> {
+  async findAll(): Promise<Trip[]> {
     return this.tripsService.findAll();
   }
 
@@ -48,10 +47,10 @@ export class TripsController {
   @ApiResponse({
     status: 200,
     description: 'The trip details.',
-    type: TripDetailReadDto,
+    type: TripDto,
   })
   @ApiResponse({ status: 404, description: 'Trip not found.' })
-  async findOne(@Param('id') id: string): Promise<TripDetailReadDto | null> {
+  async findOne(@Param('id') id: string): Promise<Trip | null> {
     return this.tripsService.findOne(id);
   }
 
@@ -66,7 +65,7 @@ export class TripsController {
   async update(
     @Param('id') id: string,
     @Body() updateTripDto: UpdateTripDto,
-  ): Promise<TripDto | null> {
+  ): Promise<Trip | null> {
     return this.tripsService.update(id, updateTripDto);
   }
 
@@ -78,7 +77,7 @@ export class TripsController {
     type: TripDto,
   })
   @ApiResponse({ status: 404, description: 'Trip not found.' })
-  async remove(@Param('id') id: string): Promise<TripDto | null> {
+  async remove(@Param('id') id: string): Promise<Trip | null> {
     return this.tripsService.remove(id);
   }
 }

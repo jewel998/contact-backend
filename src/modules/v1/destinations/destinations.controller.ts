@@ -11,7 +11,7 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { DestinationsService } from './destinations.service';
 import { CreateDestinationDto } from './dto/create-destination.dto';
 import { UpdateDestinationDto } from './dto/update-destination.dto';
-import { Destination } from '../../../generated/prisma';
+import { Destination } from 'generated/prisma';
 
 @ApiTags('Destinations')
 @Controller('v1/destinations')

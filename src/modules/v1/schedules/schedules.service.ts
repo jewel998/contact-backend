@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '../../../database/database.service';
-import { Schedule } from '../../../../generated/prisma';
+import { DatabaseService } from '@/database/database.service';
+import { Schedule } from 'generated/prisma';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
 

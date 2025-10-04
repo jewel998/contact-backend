@@ -1,84 +1,74 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { ContentDto } from './content.dto';
+import { SourceDto } from './source.dto';
 
 export class TripDto {
-  @ApiProperty({ description: 'Unique identifier for the trip.' })
+  @ApiProperty()
   id: string;
 
-  @ApiProperty({ description: 'Indicates if the trip is active.' })
+  @ApiProperty()
   active: boolean;
 
-  @ApiProperty({
-    type: 'object',
-    description: 'JSON object with trip content.',
-  })
-  content: any;
+  @ApiProperty({ type: ContentDto })
+  content: ContentDto;
 
-  @ApiProperty({ description: 'The creation date of the trip.' })
+  @ApiProperty()
   createdAt: Date;
 
-  @ApiProperty({ description: 'Currency of the trip price.' })
+  @ApiProperty()
   currency: string;
 
-  @ApiProperty({ type: [String], description: 'Array of destination IDs.' })
+  @ApiProperty({ type: [String] })
   destinations: string[];
 
-  @ApiProperty({ description: 'Duration of the trip in days.' })
+  @ApiProperty()
   durationDays: number;
 
-  @ApiProperty({ description: 'Indicates if the operator is verified.' })
+  @ApiProperty()
   isVerifiedOperator: boolean;
 
-  @ApiProperty({
-    type: [String],
-    description: 'Months when the trip is available.',
-  })
+  @ApiProperty({ type: [String] })
   months: string[];
 
-  @ApiProperty({ description: 'The next start date of the trip.' })
+  @ApiProperty()
   nextStartDate: string;
 
-  @ApiProperty({ description: 'The ID of the operator.' })
+  @ApiProperty()
   operatorId: string;
 
-  @ApiProperty({ description: 'Starting price of the trip.' })
+  @ApiProperty()
   priceFrom: number;
 
-  @ApiProperty({ description: 'The ID of the primary destination.' })
+  @ApiProperty()
   primaryDestination: string;
 
-  @ApiProperty({ description: 'Unique slug for the trip.' })
+  @ApiProperty()
   slug: string;
 
-  @ApiProperty({
-    type: 'object',
-    description: 'JSON object with source information.',
-  })
-  source: any;
+  @ApiProperty({ type: SourceDto })
+  source: SourceDto;
 
-  @ApiProperty({
-    type: [String],
-    description: 'Tags associated with the trip.',
-  })
+  @ApiProperty({ type: [String] })
   tags: string[];
 
-  @ApiProperty({ description: 'Title of the trip.' })
+  @ApiProperty()
   title: string;
 
-  @ApiProperty({ description: 'Type of the trip.' })
+  @ApiProperty()
   tripType: string;
 
-  @ApiProperty({ description: 'The last update date of the trip.' })
+  @ApiProperty()
   updatedAt: Date;
 
-  @ApiProperty({ description: 'Name of the operator.' })
+  @ApiProperty()
   operatorName: string;
 
-  @ApiProperty({ description: 'Starting point of the trip.' })
+  @ApiProperty()
   startFrom: string;
 
-  @ApiProperty({ description: 'Theme of the trip.' })
+  @ApiProperty()
   theme: string;
 
-  @ApiProperty({ description: 'Version number.' })
+  @ApiProperty()
   v: number;
 }
